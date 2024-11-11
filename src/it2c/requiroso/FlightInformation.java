@@ -8,7 +8,7 @@ public class FlightInformation {
     
    public void fTransaction(){
      Scanner sc = new Scanner(System.in);
-     String response;
+   String response = "yes";
      do{
           System.out.println("FLIGHT INFORMATION PANEL");
             System.out.println("1. ADD FLIGHT");
@@ -38,8 +38,11 @@ public class FlightInformation {
               fi.viewFlight();
         break;
     case 5:
-       System.out.println("Exiting...");
-        break;
+       System.out.println("Exiting Flight Panel...");
+                    return;
+         default:
+                    System.out.println("Invalid action. Please try again.");
+                    continue;
      }
         System.out.println("Do you want to continue?(yes/no): ");
           response = sc.next();
@@ -54,40 +57,64 @@ public class FlightInformation {
          
          System.out.println("Flight Number: ");
        String flightNum = sc.nextLine();
+      
+       while (flightNum.isEmpty()) {
+        System.out.println("Flight Number cannot be empty. Please enter a valid Flight Number.: ");
+        flightNum = sc.nextLine();
+    }
+    
        
-        System.out.print("Destination: ");
-    String destination = sc.nextLine();
+       System.out.print("Destination: ");
+String destination = sc.nextLine();
+
+while (destination.isEmpty() || destination.matches(".*\\d.*")) {
+    System.out.println("Invalid input. Destination cannot be empty or contain numbers. Please enter a valid destination: ");
+    destination = sc.nextLine();
+}
+
     
-    System.out.print("Departure Time: ");
-  String departure = sc.nextLine();
     
-    System.out.print("Arrival Time: ");
+     System.out.print("Departure Time & Date: ");
+    String departure = sc.nextLine();
+    while (departure.isEmpty()) {
+        System.out.println("Departure Time & Date cannot be empty. Please enter a valid departure date.");
+        departure = sc.nextLine();
+    }
+    
+   System.out.print("Arrival Time & Date: ");
     String arrival = sc.nextLine();
+    while (arrival.isEmpty()) {
+        System.out.println("Arrival Time & Date cannot be empty. Please enter a valid arrival date.");
+        arrival = sc.nextLine();
+    }
     
     System.out.print("Number of Seats: ");
     String seats = sc.nextLine();
     
     System.out.print("Price per Ticket: ");
     String price = sc.nextLine();
+      System.out.print("Status of the flight: ");
+    String fstatus = sc.nextLine();
 
-        String qry = "INSERT INTO flight (flight_number, destination, departure, arrival, seats, price) VALUES (?, ?, ?, ?, ?, ?)";
+        String qry = "INSERT INTO flight (flight_number, destination, departure, arrival, seats, price,f_status) VALUES (?, ?, ?, ?, ?, ?,?)";
         
     config conf = new config();
     
-   conf.addRecord(qry, flightNum, destination, departure, arrival, seats, price);
+   conf.addRecord(qry, flightNum, destination, departure, arrival, seats, price,fstatus);
    }
+ 
    
-   public void viewFlight(){
-       
-        String qry = "SELECT * FROM flight";
-        String[] hdrs = {"ID", "Flight Number","Destination", "Departure", "Arrival", "Seats", "Price"};
-        String[] clmns = {"flight_id", "flight_number","destination", "departure", "arrival", "seats", "price"};
-        config conf = new config();
-        conf.viewRecord(qry, hdrs, clmns);
-       
-       
-       
-   }
+   public void viewFlight() {
+   
+    String qry = "SELECT * FROM flight";
+    String[] hdrs = {"ID", "Flight Number", "Destination", "Departure", "Arrival", "Seats", "Price", "Status"};
+    String[] clmns = {"flight_id", "flight_number", "destination", "departure", "arrival", "seats", "price", "f_status"};
+    
+    config conf = new config();
+    conf.viewRecord(qry, hdrs, clmns);
+}
+
+
    private void updateFlight(){
         Scanner sc = new Scanner(System.in);
          config conf = new config();
@@ -105,14 +132,34 @@ public class FlightInformation {
         System.out.println("Enter the new Flight Number:");
         String flightnum = sc.nextLine();
         
+         while (flightnum.isEmpty()) {
+        System.out.println("Flight Number cannot be empty. Please enter a valid Flight Number.: ");
+        flightnum = sc.nextLine();
+    }
+        
         System.out.println("Enter the new Destination: ");
         String fdest = sc.nextLine();
+        
+        while (fdest.isEmpty() || fdest.matches(".*\\d.*")) {
+    System.out.println("Invalid input. Destination cannot be empty or contain numbers. Please enter a valid destination: ");
+  fdest = sc.nextLine();
+}
         
         System.out.println("Enter the new Departure: ");
         String fdept = sc.nextLine();
         
+        while (fdept.isEmpty()) {
+        System.out.println("Departure Time & Date cannot be empty. Please enter a valid departure date.");
+        fdept = sc.nextLine();
+    }
+        
         System.out.println("New Arrival: ");
         String farrival = sc.nextLine();
+        
+         while (farrival.isEmpty()) {
+        System.out.println("Arrival Time & Date cannot be empty. Please enter a valid arrival date.");
+       farrival = sc.nextLine();
+    }
         
         System.out.println("Enter new Seats: ");
         String fseats = sc.nextLine();
@@ -147,6 +194,22 @@ public class FlightInformation {
         
     }
     
+   public void viewAvailableFlights() {
+    String qry = "SELECT * FROM flight WHERE f_status = 'AVAILABLE'";
+    String[] hdrs = {"ID", "Flight Number", "Destination", "Departure", "Arrival", "Seats", "Price", "Status"};
+    String[] clmns = {"flight_id", "flight_number", "destination", "departure", "arrival", "seats", "price", "f_status"};
+
+    config conf = new config();
+    conf.viewRecord(qry, hdrs, clmns);
+}
+
+    public void updateSeatsAfterBooking(String flightId) {
+       config conf = new config();
+       
+        String updateSeatsQry = "UPDATE flight SET seats = seats - 1 WHERE flight_id = ?";
+         conf.addRecord(updateSeatsQry, flightId); 
+    }
+
    
    
 }

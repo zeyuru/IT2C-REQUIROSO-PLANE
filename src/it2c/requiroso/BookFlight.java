@@ -10,7 +10,7 @@ public class BookFlight {
     
      public void bTransaction(){
      Scanner sc = new Scanner(System.in);
-     String response;
+    String response = "yes";
      do{
           System.out.println("BOOK A FLIGHT PANEL");
             System.out.println("1. BOOK A FLIGHT");
@@ -20,13 +20,14 @@ public class BookFlight {
              System.out.println("5. EXIT");
              System.out.println("Enter Action");
            int  action = sc.nextInt(); 
+           
+            
             
              BookFlight bk = new BookFlight();
      switch(action){
     case 1:
-        bk.viewBF();
+       
        bk.bookFlight();
-     bk.viewBF();
     break; 
     case 2:
       bk.viewBF();
@@ -41,8 +42,11 @@ public class BookFlight {
             bk.deleteBF();
         break;
     case 5:
-       System.out.println("Exiting...");
-        break;
+       System.out.println("Exiting Flight Panel...");
+                    return;
+         default:
+                    System.out.println("Invalid action. Please try again.");
+                    continue;
      }
         System.out.println("Do you want to continue?(yes/no): ");
           response = sc.next();
@@ -57,7 +61,7 @@ public class BookFlight {
     Passenger demo = new Passenger();
     FlightInformation fi = new FlightInformation();
     demo.viewPassenger();
-    fi.viewFlight();
+    fi.viewAvailableFlights();
     System.out.println("------BOOK A FLIGHT!-----");
        System.out.println("Enter the ID of the Passenger: ");
     String p_id = sc.nextLine();
@@ -76,6 +80,13 @@ public class BookFlight {
         System.out.println("Select Flight ID again: ");
         flight_id = sc.nextLine();
     }
+    
+     double availableSeats = conf.getSingleValue("SELECT seats FROM flight WHERE flight_id = ?", flight_id);
+    if (availableSeats <= 0) {
+        System.out.println("No seats available for this flight.");
+        return;
+    }
+    
     
     String priceqry = "SELECT price FROM flight WHERE flight_id = ?";
     double price = conf.getSingleValue(priceqry, flight_id);
@@ -103,24 +114,49 @@ public class BookFlight {
     String qry = "INSERT INTO book (p_id,flight_id, b_cash, b_date, status) VALUES (?, ?, ?, ?,?)";
     conf.addRecord(qry,p_id, flight_id, String.valueOf(rcash), date, status);
     
+        String updateSeatsQry = "UPDATE flight SET seats = seats - 1 WHERE flight_id = ?";
+    conf.addRecord(updateSeatsQry, flight_id);
     System.out.println("Added Successfully!");
 }
      
-public void viewBF(){
-       
-        String qry = "SELECT book.*, passenger.p_fname, passenger.p_lname, book.b_date, book.status FROM book "
-            + "LEFT JOIN passenger ON passenger.p_id = book.p_id "
-            + "LEFT JOIN flight ON flight.flight_id = book.flight_id";
+public void viewBF() {
+    Scanner sc = new Scanner(System.in);
+    config conf = new config();
 
-        String[] hdrs = {"BID", "Passenger First Name", "Passenger Last Name", "Date", "Status"};
-String[] clmns = {"b_id", "p_fname", "p_lname", "b_date", "status"};
+    System.out.print("Enter Passenger ID to view booked flights: ");
+    String passengerId = sc.nextLine();
+    
+    while (conf.getSingleValue("SELECT p_id FROM passenger WHERE p_id = ?", passengerId) == 0) {
+        System.out.println("Selected ID doesn't exist!");
+        System.out.println("Select Passenger ID again: ");
+        passengerId = sc.nextLine();
+    }
 
-        config conf = new config();
+   
+    String qry = "SELECT book.*, passenger.p_fname, passenger.p_lname, flight.flight_number, book.b_date, book.status " +
+                 "FROM book " +
+                 "LEFT JOIN passenger ON passenger.p_id = book.p_id " +
+                 "LEFT JOIN flight ON flight.flight_id = book.flight_id " +
+                 "WHERE book.p_id = '" + passengerId + "'";
+
+    String[] hdrs = {"BID", "Passenger First Name", "Passenger Last Name", "Flight Number", "Date", "Status"};
+    String[] clmns = {"b_id", "p_fname", "p_lname", "flight_number", "b_date", "status"};
+
+
+    String countSql = "SELECT COUNT(*) FROM book WHERE p_id = '" + passengerId + "'";
+   double bookingCount = conf.getSingleValue(countSql);
+
+    if (bookingCount == 0) {
+        System.out.println("No booked flights found for this Passenger ID.");
+    } else {
+        
         conf.viewRecord(qry, hdrs, clmns);
-       
-       
-       
-   }
+    }
+}
+
+
+
+
 
 private void updateBF(){
     Scanner sc = new Scanner(System.in);
