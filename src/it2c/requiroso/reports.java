@@ -3,13 +3,13 @@ package it2c.requiroso;
 import java.util.Scanner;
 
 public class reports {
-    public void showReports() {
+ public void showReports() {
     reports sr = new reports();
     FlightInformation fi = new FlightInformation();
     Scanner sc = new Scanner(System.in);
     config conf = new config();
     fi.viewFlight();
-
+     
     System.out.print("Enter Flight ID to view passengers: ");
     String flightId = sc.nextLine();  
 
@@ -43,5 +43,8 @@ public class reports {
         conf.viewRecord(sql, headers, columns);
     }
 }
+
+
+
 
 }

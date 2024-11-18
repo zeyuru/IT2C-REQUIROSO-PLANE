@@ -10,18 +10,43 @@ public class BookFlight {
     
      public void bTransaction(){
      Scanner sc = new Scanner(System.in);
+      boolean validInput = false;
     String response = "yes";
+    int action = 0;
      do{
+          System.out.println("-------------------------------");
           System.out.println("BOOK A FLIGHT PANEL");
             System.out.println("1. BOOK A FLIGHT");
              System.out.println("2. VIEW BOOKED FLIGHT");
              System.out.println("3. UPDATE BOOKED FLIGHT");
              System.out.println("4. DELETE BOOKED FLIGHT");
              System.out.println("5. EXIT");
-             System.out.println("Enter Action");
-           int  action = sc.nextInt(); 
-           
+            System.out.println("-------------------------------");
             
+              while (!validInput) {
+                System.out.print("Enter Action: ");
+                String input = sc.nextLine();
+
+                if (input.isEmpty()) {
+                    System.out.println("Input cannot be empty. Please enter a number between 1-5: ");
+                } else {
+                    try {
+                        action = Integer.parseInt(input); 
+                        if (action >= 1 && action <= 5) {
+                            validInput = true; 
+                        } else {
+                            System.out.println("Invalid action. Pick only from 1-5: ");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please pick only from 1-5: ");
+                    }
+                }
+            }
+
+            if (action == 5) {
+                System.out.println("Exiting...");
+                break;
+            }
             
              BookFlight bk = new BookFlight();
      switch(action){
@@ -41,9 +66,6 @@ public class BookFlight {
             bk.viewBF();
             bk.deleteBF();
         break;
-    case 5:
-       System.out.println("Exiting Flight Panel...");
-                    return;
          default:
                     System.out.println("Invalid action. Please try again.");
                     continue;
@@ -97,8 +119,18 @@ public class BookFlight {
     
    
     while (rcash < price) {
-        System.out.print("Invalid Amount, Try Again: ");
-        rcash = sc.nextDouble();
+        System.out.print("Enter received cash: ");
+        
+       
+        if (sc.hasNextDouble()) {
+            rcash = sc.nextDouble();
+            if (rcash < price) {
+                System.out.println("Amount is less than the required price. Try again.");
+            }
+        } else {
+            System.out.println("Invalid input. Please enter a valid numeric value for the received cash.");
+            sc.next(); 
+        }
     }
          System.out.println("Cash Received: " +rcash);
          double change = rcash - price;
@@ -204,9 +236,19 @@ private void updateBF(){
     double rcash = sc.nextDouble();
     
    
-    while (rcash < price) {
-        System.out.print("Invalid Amount, Try Again: ");
-        rcash = sc.nextDouble();
+     while (rcash < price) {
+        System.out.print("Enter received cash: ");
+        
+       
+        if (sc.hasNextDouble()) {
+            rcash = sc.nextDouble();
+            if (rcash < price) {
+                System.out.println("Amount is less than the required price. Try again.");
+            }
+        } else {
+            System.out.println("Invalid input. Please enter a valid numeric value for the received cash.");
+            sc.next(); 
+        }
     }
          System.out.println("Cash Received: " +rcash);
          double change = rcash - price;
@@ -226,25 +268,48 @@ private void updateBF(){
     System.out.println("Updated Successfully!");
     }
     
-    private void deleteBF(){
-        Scanner sc = new Scanner(System.in);
-         config conf = new config();
-        System.out.println("Enter Book ID to delete: ");
-        int id = sc.nextInt();
+   private void deleteBF() {
+    Scanner sc = new Scanner(System.in);
+    config conf = new config();
+    
+    int id = -1;
+    boolean validInput = false;
+    
+    while (!validInput) {
+        System.out.print("Enter Book ID to delete: ");
         
-          while (conf.getSingleValue ("SELECT b_id FROM book WHERE b_id = ?",id)== 0){
-            System.out.println("Selected ID doesn't exist!");
-            System.out.println("Select Booking ID again: ");
-            id = sc.nextInt();
+      
+        String input = sc.nextLine().trim();
+        
+       
+        if (input.isEmpty()) {
+            System.out.println("Input cannot be empty. Please try again.");
+            continue;
         }
         
         
-        String sqlDelete = "Delete from book WHERE b_id = ?";
-       
-        conf.deleteRecord(sqlDelete, id);
+        try {
+            id = Integer.parseInt(input);
+
         
-        
+            if (conf.getSingleValue("SELECT b_id FROM book WHERE b_id = ?", id) != 0) {
+                validInput = true; 
+            } else {
+                System.out.println("Selected ID doesn't exist! Please try again.");
+            }
+        } catch (NumberFormatException e) {
+           
+            System.out.println("Invalid input. Please enter a valid integer ID.");
+        }
     }
+
+   
+    String sqlDelete = "DELETE FROM book WHERE b_id = ?";
+    conf.deleteRecord(sqlDelete, id);
+
+    System.out.println("Booking deleted successfully.");
+}
+
     
     
 

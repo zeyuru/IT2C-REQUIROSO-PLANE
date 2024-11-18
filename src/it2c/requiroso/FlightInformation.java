@@ -8,17 +8,45 @@ public class FlightInformation {
     
    public void fTransaction(){
      Scanner sc = new Scanner(System.in);
+      boolean validInput = false;
    String response = "yes";
+    int  action = 0;
      do{
+          System.out.println("-------------------------------");
           System.out.println("FLIGHT INFORMATION PANEL");
             System.out.println("1. ADD FLIGHT");
              System.out.println("2. VIEW FLIGHT");
              System.out.println("3. UPDATE FLIGHT");
              System.out.println("4. DELETE FLIGHT");
              System.out.println("5. EXIT");
-             System.out.println("Enter Action");
-           int  action = sc.nextInt(); 
+            System.out.println("-------------------------------");
              
+              while (!validInput) {
+                System.out.print("Enter Action: ");
+                String input = sc.nextLine();
+
+                if (input.isEmpty()) {
+                    System.out.println("Input cannot be empty. Please enter a number between 1-5: ");
+                } else {
+                    try {
+                        action = Integer.parseInt(input); 
+                        if (action >= 1 && action <= 5) {
+                            validInput = true; 
+                        } else {
+                            System.out.println("Invalid action. Pick only from 1-5: ");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please pick only from 1-5: ");
+                    }
+                }
+            }
+
+            if (action == 5) {
+                System.out.println("Exiting...");
+                break;
+            }
+           
+           
               FlightInformation fi = new FlightInformation();
      switch(action){
     case 1:
@@ -37,9 +65,6 @@ public class FlightInformation {
             fi.deleteFlight();
               fi.viewFlight();
         break;
-    case 5:
-       System.out.println("Exiting Flight Panel...");
-                    return;
          default:
                     System.out.println("Invalid action. Please try again.");
                     continue;
@@ -74,27 +99,40 @@ while (destination.isEmpty() || destination.matches(".*\\d.*")) {
 
     
     
-     System.out.print("Departure Time & Date: ");
+     System.out.print("Departure Time & Date (MM-DD-YYYY HH:MM): ");
     String departure = sc.nextLine();
-    while (departure.isEmpty()) {
-        System.out.println("Departure Time & Date cannot be empty. Please enter a valid departure date.");
+    while (departure.isEmpty() || !departure.matches("\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}")) {
+        System.out.println("Invalid format. Please enter the date and time in MM-DD-YYYY HH:MM format.");
         departure = sc.nextLine();
     }
+
     
-   System.out.print("Arrival Time & Date: ");
+    System.out.print("Arrival Time & Date (MM-DD-YYYY HH:MM): ");
     String arrival = sc.nextLine();
-    while (arrival.isEmpty()) {
-        System.out.println("Arrival Time & Date cannot be empty. Please enter a valid arrival date.");
+    while (arrival.isEmpty() || !arrival.matches("\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}")) {
+        System.out.println("Invalid format. Please enter the date and time in MM-DD-YYYY HH:MM format.");
         arrival = sc.nextLine();
     }
-    
-    System.out.print("Number of Seats: ");
+
+      System.out.print("Number of Seats: ");
     String seats = sc.nextLine();
-    
-    System.out.print("Price per Ticket: ");
+    while (seats.isEmpty() || !seats.matches("\\d+") || Integer.parseInt(seats) <= 0) {
+        System.out.println("Invalid input. Number of seats must be a positive integer.");
+        seats = sc.nextLine();
+    }
+   System.out.print("Price per Ticket: ");
     String price = sc.nextLine();
-      System.out.print("Status of the flight: ");
+    while (price.isEmpty() || !price.matches("\\d+(\\.\\d{1,2})?") || Double.parseDouble(price) <= 0) {
+        System.out.println("Invalid input. Please enter a valid price greater than zero.");
+        price = sc.nextLine();
+    }
+    
+     System.out.print("Status of the flight (AVAILABLE/NOT AVAILABLE): ");
     String fstatus = sc.nextLine();
+    while (fstatus.isEmpty() || (!fstatus.equalsIgnoreCase("AVAILABLE") && !fstatus.equalsIgnoreCase("NOT AVAILABLE"))) {
+        System.out.println("Invalid input. Status must be either 'AVAILABLE' or 'NOT AVAILABLE'. Please try again.");
+        fstatus = sc.nextLine();
+    }
 
         String qry = "INSERT INTO flight (flight_number, destination, departure, arrival, seats, price,f_status) VALUES (?, ?, ?, ?, ?, ?,?)";
         
@@ -145,28 +183,35 @@ while (destination.isEmpty() || destination.matches(".*\\d.*")) {
   fdest = sc.nextLine();
 }
         
-        System.out.println("Enter the new Departure: ");
-        String fdept = sc.nextLine();
-        
-        while (fdept.isEmpty()) {
-        System.out.println("Departure Time & Date cannot be empty. Please enter a valid departure date.");
+       System.out.print("Departure Time & Date (MM-DD-YYYY HH:MM): ");
+    String fdept = sc.nextLine();
+    while (fdept.isEmpty() || !fdept.matches("\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}")) {
+        System.out.println("Invalid format. Please enter the date and time in MM-DD-YYYY HH:MM format.");
         fdept = sc.nextLine();
     }
+
         
-        System.out.println("New Arrival: ");
-        String farrival = sc.nextLine();
-        
-         while (farrival.isEmpty()) {
-        System.out.println("Arrival Time & Date cannot be empty. Please enter a valid arrival date.");
-       farrival = sc.nextLine();
+        System.out.print("Arrival Time & Date (MM-DD-YYYY HH:MM): ");
+    String farrival = sc.nextLine();
+    while (farrival.isEmpty() || !farrival.matches("\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2}")) {
+        System.out.println("Invalid format. Please enter the date and time in MM-DD-YYYY HH:MM format.");
+        farrival = sc.nextLine();
     }
         
-        System.out.println("Enter new Seats: ");
-        String fseats = sc.nextLine();
+        System.out.print("New Number of Seats: ");
+    String fseats = sc.nextLine();
+    
+    while (fseats.isEmpty() || !fseats.matches("\\d+") || Integer.parseInt(fseats) <= 0) {
+        System.out.println("Invalid input. Number of seats must be a positive integer.");
+        fseats = sc.nextLine();
+    }
         
-        System.out.println("Enter new price: ");
-        String fprice = sc.nextLine();
-        
+        System.out.print("New Price per Ticket: ");
+    String fprice = sc.nextLine();
+    while (fprice.isEmpty() || !fprice.matches("\\d+(\\.\\d{1,2})?") || Double.parseDouble(fprice) <= 0) {
+        System.out.println("Invalid input. Please enter a valid price greater than zero.");
+        fprice = sc.nextLine();
+    }
        
         
         String qry = "UPDATE flight SET flight_number = ?, destination = ?, departure = ?, arrival = ?, seats = ?, price = ? WHERE flight_id = ?";
@@ -174,26 +219,42 @@ while (destination.isEmpty() || destination.matches(".*\\d.*")) {
         conf.updateRecord(qry, flightnum, fdest, fdept,farrival, fseats, fprice, id);
     }
    
-   private void deleteFlight(){
-        Scanner sc = new Scanner(System.in);
-         config conf = new config();
-        System.out.println("Enter Flight ID to delete: ");
-        int id = sc.nextInt();
-        
-          while (conf.getSingleValue ("SELECT flight_id FROM flight WHERE flight_id = ?",id)== 0){
-            System.out.println("Selected ID doesn't exist!");
-            System.out.println("Select Flight ID again: ");
-            id = sc.nextInt();
-        }
-        
-        
-        String sqlDelete = "Delete from flight WHERE flight_id = ?";
-       
-        conf.deleteRecord(sqlDelete, id);
-        
-        
+  private void deleteFlight() {
+    Scanner sc = new Scanner(System.in);
+    config conf = new config();
+
+   
+    System.out.println("Enter Flight ID to delete: ");
+    String input = sc.nextLine();  
+
+   
+    while (input.isEmpty() || !input.matches("\\d+")) {
+        System.out.println("Invalid input. Flight ID should be a number. Please try again: ");
+        input = sc.nextLine();  
     }
-    
+    int id = Integer.parseInt(input);  
+
+  
+    while (conf.getSingleValue("SELECT flight_id FROM flight WHERE flight_id = ?", id) == 0) {
+        System.out.println("Selected ID doesn't exist! Please try again: ");
+        input = sc.nextLine();  
+
+        
+        while (input.isEmpty() || !input.matches("\\d+")) {
+            System.out.println("Invalid input. Flight ID should be a number. Please try again: ");
+            input = sc.nextLine(); 
+        }
+
+        id = Integer.parseInt(input); 
+    }
+
+   
+    String sqlDelete = "DELETE FROM flight WHERE flight_id = ?";
+    conf.deleteRecord(sqlDelete, id);
+
+    System.out.println("Flight with ID " + id + " deleted successfully.");
+}
+
    public void viewAvailableFlights() {
     String qry = "SELECT * FROM flight WHERE f_status = 'AVAILABLE'";
     String[] hdrs = {"ID", "Flight Number", "Destination", "Departure", "Arrival", "Seats", "Price", "Status"};
