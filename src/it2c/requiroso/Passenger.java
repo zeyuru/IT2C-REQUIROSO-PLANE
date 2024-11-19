@@ -7,78 +7,92 @@ import java.util.Scanner;
 public class Passenger {
     
     public void pTransaction() {
-        Scanner sc = new Scanner(System.in);
-         boolean validInput = false;
-        String response = "yes"; 
-        int action = 0;
-        do {
-             System.out.println("-------------------------------");
-            System.out.println("PASSENGER PANEL");
-            System.out.println("1. ADD PASSENGER");
-            System.out.println("2. VIEW PASSENGER");
-            System.out.println("3. UPDATE PASSENGER");
-            System.out.println("4. DELETE PASSENGER");
-            System.out.println("5. EXIT");
-          System.out.println("-------------------------------");
-              while (!validInput) {
-                System.out.print("Enter Action: ");
-                String input = sc.nextLine();
+    Scanner sc = new Scanner(System.in);
+    String response = "yes"; 
+    int action = 0;
 
-                if (input.isEmpty()) {
-                    System.out.println("Input cannot be empty. Please enter a number between 1-5: ");
-                } else {
-                    try {
-                        action = Integer.parseInt(input); 
-                        if (action >= 1 && action <= 5) {
-                            validInput = true; 
-                        } else {
-                            System.out.println("Invalid action. Pick only from 1-5: ");
-                        }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid input. Please pick only from 1-5: ");
+    do {
+        boolean validInput = false; 
+        System.out.println("-------------------------------");
+        System.out.println("PASSENGER PANEL");
+        System.out.println("1. ADD PASSENGER");
+        System.out.println("2. VIEW PASSENGER");
+        System.out.println("3. UPDATE PASSENGER");
+        System.out.println("4. DELETE PASSENGER");
+        System.out.println("5. EXIT");
+        System.out.println("-------------------------------");
+
+        
+        while (!validInput) {
+            System.out.print("Enter Action: ");
+            String input = sc.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty. Please enter a number between 1-5:");
+            } else {
+                try {
+                    action = Integer.parseInt(input);
+                    if (action >= 1 && action <= 5) {
+                        validInput = true; 
+                    } else {
+                        System.out.println("Invalid action. Pick only from 1-5:");
                     }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid number between 1-5:");
                 }
             }
+        }
 
-            if (action == 5) {
-                System.out.println("Exiting...");
+        
+        if (action == 5) {
+            System.out.println("Exiting...");
+            break;
+        }
+
+        
+        Passenger demo = new Passenger();
+        switch (action) {
+            case 1:
+                demo.addPassenger();
+                demo.viewPassenger();
                 break;
-            }
+            case 2:
+                demo.viewPassenger();
+                break;
+            case 3:
+                demo.viewPassenger();
+                demo.updatePassenger();
+                demo.viewPassenger();
+                break;
+            case 4:
+                demo.viewPassenger();
+                demo.deletePassenger();
+                demo.viewPassenger();
+                break;
+            default:
+                System.out.println("Invalid action. Please try again.");
+        }
 
-            Passenger demo = new Passenger();
-
-     
-            switch (action) {
-                case 1:
-                    demo.addPassenger();
-                    demo.viewPassenger();
-                    break;
-                case 2:
-                    demo.viewPassenger();
-                    break;
-                case 3:
-                    demo.viewPassenger();
-                    demo.updatePassenger();
-                    demo.viewPassenger();
-                    break;
-                case 4:
-                    demo.viewPassenger();
-                    demo.deletePassenger();
-                    demo.viewPassenger();
-                    break;
-               
-                default:
-                    System.out.println("Invalid action. Please try again.");
-                    continue; 
-            }
-
+       
+        boolean validResponse = false;
+        while (!validResponse) {
             System.out.print("Do you want to continue? (yes/no): ");
-            response = sc.next();
+            response = sc.nextLine().trim(); 
 
-        } while (response.equalsIgnoreCase("yes"));
+            if (response.isEmpty()) {
+                System.out.println("Input cannot be empty. Please type 'yes' or 'no'.");
+            } else if (response.equalsIgnoreCase("yes") || response.equalsIgnoreCase("no")) {
+                validResponse = true; 
+            } else {
+                System.out.println("Invalid input. Please type 'yes' or 'no'.");
+            }
+        }
 
-        System.out.println("Thank you!");
-    }
+    } while (response.equalsIgnoreCase("yes"));
+
+    System.out.println("Thank you!");
+}
+
 
     public void addPassenger() {
         config conf = new config();
@@ -87,14 +101,14 @@ public class Passenger {
         System.out.print("First Name: ");
     String fname = sc.nextLine();
         while (fname.isEmpty() || !fname.matches("[a-zA-Z]+")) {
-           System.out.println("First name cannot be empty and must contain only letters. Please enter a valid first name.: ");
+           System.out.println("Please enter a valid first name.: ");
                  fname = sc.nextLine();
 }
         
         System.out.print("Last Name: ");
             String lname = sc.nextLine();
                 while (lname.isEmpty() || !lname.matches("[a-zA-Z]+")) {
-                    System.out.println("Last name cannot be empty and must contain only letters. Please enter a valid last name.: ");
+                    System.out.println("Please enter a valid last name.: ");
                         lname = sc.nextLine();
 }
                 
@@ -108,14 +122,14 @@ public class Passenger {
       System.out.print("Passport Number: ");
     String passport = sc.nextLine();
             while (passport.isEmpty() || !passport.matches("[a-zA-Z0-9]+")) {
-    System.out.println("Passport number cannot be empty and must contain only letters and numbers. Please enter a valid passport number.");
+    System.out.println("Please enter a valid passport number: ");
     passport = sc.nextLine();
 }
 
        System.out.print("Nationality: ");
     String nationality = sc.nextLine();
                 while (nationality.isEmpty()) {
-                     System.out.println("Nationality cannot be empty. Please enter a valid nationality.");
+                     System.out.println("Please enter a valid nationality: ");
                              nationality = sc.nextLine();
     }
        System.out.print("Date of Birth (MM-DD-YYYY): ");
@@ -163,13 +177,13 @@ public class Passenger {
         System.out.print("Enter the new First Name: ");
         String ufname = sc.nextLine();
           while (ufname.isEmpty() || !ufname.matches("[a-zA-Z]+")) {
-           System.out.println("First name cannot be empty and must contain only letters. Please enter a valid first name.: ");
+           System.out.println(" Please enter a valid first name.: ");
                  ufname = sc.nextLine();
 }
         System.out.print("Enter the new Last Name: ");
         String ulname = sc.nextLine();
          while (ulname.isEmpty() || !ulname.matches("[a-zA-Z]+")) {
-                    System.out.println("Last name cannot be empty and must contain only letters. Please enter a valid last name.: ");
+                    System.out.println(" Please enter a valid last name.: ");
                         ulname = sc.nextLine();
 }
         System.out.print("Enter the new Email: ");
@@ -181,13 +195,13 @@ public class Passenger {
         System.out.print("New Passport: ");
         String upassport = sc.nextLine();
         while (upassport.isEmpty() || !upassport.matches("[a-zA-Z0-9]+")) {
-    System.out.println("Passport number cannot be empty and must contain only letters and numbers. Please enter a valid passport number.");
+    System.out.println("Please enter a valid passport number: ");
     upassport = sc.nextLine();
 }
         System.out.print("Enter new Nationality: ");
         String unationality = sc.nextLine();
         while (unationality.isEmpty()) {
-                     System.out.println("Nationality cannot be empty. Please enter a valid nationality.");
+                     System.out.println("Please enter a valid nationality: ");
                              unationality = sc.nextLine();
     }
         System.out.print("Enter new Date of Birth: ");
@@ -200,7 +214,7 @@ public class Passenger {
         System.out.print("Enter new Phone Number: ");
         String upnumber = sc.nextLine();
  while (!upnumber.matches("^\\d{11}$")) {
-        System.out.println("Invalid Phone Number. Please enter exactly 11 digits without characters: ");
+        System.out.println("Invalid Phone Number: ");
         upnumber = sc.next();
     }
         String qry = "UPDATE passenger SET p_fname = ?, p_lname = ?, p_email = ?, p_passport = ?, p_nationality = ?, p_birth = ?, p_pnumber = ? WHERE p_id = ?";

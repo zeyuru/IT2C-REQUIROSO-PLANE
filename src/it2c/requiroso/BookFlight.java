@@ -8,74 +8,92 @@ import java.util.Scanner;
 
 public class BookFlight {
     
-     public void bTransaction(){
-     Scanner sc = new Scanner(System.in);
-      boolean validInput = false;
+    public void bTransaction() {
+    Scanner sc = new Scanner(System.in);
+    boolean validInput;
     String response = "yes";
     int action = 0;
-     do{
-          System.out.println("-------------------------------");
-          System.out.println("BOOK A FLIGHT PANEL");
-            System.out.println("1. BOOK A FLIGHT");
-             System.out.println("2. VIEW BOOKED FLIGHT");
-             System.out.println("3. UPDATE BOOKED FLIGHT");
-             System.out.println("4. DELETE BOOKED FLIGHT");
-             System.out.println("5. EXIT");
-            System.out.println("-------------------------------");
-            
-              while (!validInput) {
-                System.out.print("Enter Action: ");
-                String input = sc.nextLine();
 
-                if (input.isEmpty()) {
-                    System.out.println("Input cannot be empty. Please enter a number between 1-5: ");
-                } else {
-                    try {
-                        action = Integer.parseInt(input); 
-                        if (action >= 1 && action <= 5) {
-                            validInput = true; 
-                        } else {
-                            System.out.println("Invalid action. Pick only from 1-5: ");
-                        }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid input. Please pick only from 1-5: ");
+    do {
+        validInput = false; 
+
+        System.out.println("-------------------------------");
+        System.out.println("BOOK A FLIGHT PANEL");
+        System.out.println("1. BOOK A FLIGHT");
+        System.out.println("2. VIEW BOOKED FLIGHT");
+        System.out.println("3. UPDATE BOOKED FLIGHT");
+        System.out.println("4. DELETE BOOKED FLIGHT");
+        System.out.println("5. EXIT");
+        System.out.println("-------------------------------");
+
+        
+        while (!validInput) {
+            System.out.print("Enter Action: ");
+            String input = sc.nextLine();
+
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty. Please enter a number between 1-5: ");
+            } else {
+                try {
+                    action = Integer.parseInt(input);
+                    if (action >= 1 && action <= 5) {
+                        validInput = true; 
+                    } else {
+                        System.out.println("Invalid action. Pick only from 1-5: ");
                     }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please pick only from 1-5: ");
                 }
             }
+        }
 
-            if (action == 5) {
-                System.out.println("Exiting...");
-                break;
-            }
-            
-             BookFlight bk = new BookFlight();
-     switch(action){
-    case 1:
-       
-       bk.bookFlight();
-    break; 
-    case 2:
-      bk.viewBF();
-        break;
-    case 3:
-         bk.viewBF();
-       bk.updateBF();
-       bk.viewBF();
-        break;
-    case 4:
-            bk.viewBF();
-            bk.deleteBF();
-        break;
-         default:
-                    System.out.println("Invalid action. Please try again.");
-                    continue;
-     }
-        System.out.println("Do you want to continue?(yes/no): ");
-          response = sc.next();
         
-     }while(response.equalsIgnoreCase("yes"));
-            System.out.println("Thank You!");
+        if (action == 5) {
+            System.out.println("Exiting...");
+            break;
+        }
+
+        
+        BookFlight bk = new BookFlight();
+        switch (action) {
+            case 1:
+                bk.bookFlight();
+                break;
+            case 2:
+                bk.viewBF();
+                break;
+            case 3:
+                bk.viewBF();
+                bk.updateBF();
+                bk.viewBF();
+                break;
+            case 4:
+                bk.viewBF();
+                bk.deleteBF();
+                break;
+            default:
+                System.out.println("Invalid action. Please try again.");
+                continue; 
+        }
+
+        
+        boolean validResponse = false;
+        while (!validResponse) {
+            System.out.print("Do you want to continue? (yes/no): ");
+            response = sc.nextLine().trim();
+
+            if (response.equalsIgnoreCase("yes") || response.equalsIgnoreCase("no")) {
+                validResponse = true; 
+            } else {
+                System.out.println("Invalid input. Please type 'yes' or 'no'.");
+            }
+        }
+
+    } while (response.equalsIgnoreCase("yes"));
+
+    System.out.println("Thank You!");
 }
+
      
      private void bookFlight() {
     Scanner sc = new Scanner(System.in);
