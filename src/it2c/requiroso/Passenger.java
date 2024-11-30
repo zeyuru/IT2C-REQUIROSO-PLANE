@@ -141,7 +141,7 @@ public class Passenger {
         System.out.print("Phone Number: ");
     String pnumber = sc.next();
     while (!pnumber.matches("^\\d{11}$")) {
-        System.out.println("Invalid Phone Number. Please enter exactly 11 digits without characters: ");
+    System.out.println("Invalid Phone Number. Please enter exactly 11 digits without characters: ");
         pnumber = sc.next();
     }
 

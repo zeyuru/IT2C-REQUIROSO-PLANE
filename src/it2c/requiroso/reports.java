@@ -1,9 +1,9 @@
-
 package it2c.requiroso;
+
 import java.util.Scanner;
 
 public class reports {
-public void showReports() {
+  public void showReports() {
     Scanner sc = new Scanner(System.in);
     config conf = new config();
 
@@ -73,7 +73,5 @@ public void showReports() {
         conf.viewRecord(passengerSql, passengerHeaders, passengerColumns);
     }
 }
-
-
 
 }

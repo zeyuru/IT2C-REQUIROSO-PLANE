@@ -63,12 +63,10 @@ public class BookFlight {
                 bk.viewBF();
                 break;
             case 3:
-                bk.viewBF();
                 bk.updateBF();
-                bk.viewBF();
                 break;
             case 4:
-                bk.viewBF();
+                
                 bk.deleteBF();
                 break;
             default:

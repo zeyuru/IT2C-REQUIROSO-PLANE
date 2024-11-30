@@ -184,6 +184,23 @@ public void deleteRecord(String sql, Object... values) {
         return result;
     }
 
+    public ResultSet executeQuery(String sql, String... params) {
+    try (Connection conn = this.connectDB(); 
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        // Set parameters dynamically based on the passed values
+        for (int i = 0; i < params.length; i++) {
+            pstmt.setString(i + 1, params[i]);
+        }
+
+        // Execute query and return ResultSet
+        return pstmt.executeQuery();
+    } catch (SQLException e) {
+        System.out.println("Error executing query: " + e.getMessage());
+        return null;
+    }
+}
+
     
 
    
