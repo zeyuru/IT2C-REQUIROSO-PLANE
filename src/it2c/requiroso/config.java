@@ -5,7 +5,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Map;
+import java.util.HashMap;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 
 public class config {
@@ -202,8 +205,37 @@ public void deleteRecord(String sql, Object... values) {
 }
 
     
+// Fetches a single row and returns the values as a Map
+public Map<String, String> getSingleRow(String sql, String[] columns) {
+    Map<String, String> row = new HashMap<>();
+    try (Connection conn = this.connectDB();
+         PreparedStatement pstmt = conn.prepareStatement(sql);
+         ResultSet rs = pstmt.executeQuery()) {
 
-   
+        if (rs.next()) {
+            for (String column : columns) {
+                row.put(column, rs.getString(column));
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error fetching single row: " + e.getMessage());
+    }
+    return row;
+}
+
+  private String validateId(Scanner sc, config conf, String query, String entityName) {
+    String id = sc.nextLine();
+    while (true) {
+        int count = (int) conf.getSingleValue(query, id);
+        System.out.println("Debug: Query returned -> " + count); // Debugging output
+        if (count > 0) break; // Valid ID found
+        System.out.printf("Selected %s ID doesn't exist! Please try again: ", entityName);
+        id = sc.nextLine();
+    }
+    return id;
+}
+
+
     
 }
 

@@ -101,43 +101,41 @@ public class BookFlight {
     demo.viewPassenger();
     fi.viewAvailableFlights();
     System.out.println("------BOOK A FLIGHT!-----");
-       System.out.println("Enter the ID of the Passenger: ");
-    String p_id = sc.nextLine();
+
     
-      while (conf.getSingleValue("SELECT p_id FROM passenger WHERE p_id = ?", p_id) == 0) {
+    System.out.println("Enter the ID of the Passenger: ");
+    String p_id = sc.nextLine();
+    while (conf.getSingleValue("SELECT p_id FROM passenger WHERE p_id = ?", p_id) == 0) {
         System.out.println("Selected ID doesn't exist!");
         System.out.println("Select Passenger ID again: ");
         p_id = sc.nextLine();
     }
-      
+
+    
     System.out.println("Enter the ID of the Selected Flight: ");
     String flight_id = sc.nextLine();
-    
     while (conf.getSingleValue("SELECT flight_id FROM flight WHERE flight_id = ?", flight_id) == 0) {
         System.out.println("Selected ID doesn't exist!");
         System.out.println("Select Flight ID again: ");
         flight_id = sc.nextLine();
     }
+
     
-     double availableSeats = conf.getSingleValue("SELECT seats FROM flight WHERE flight_id = ?", flight_id);
+    double availableSeats = conf.getSingleValue("SELECT seats FROM flight WHERE flight_id = ?", flight_id);
     if (availableSeats <= 0) {
         System.out.println("No seats available for this flight.");
         return;
     }
-    
-    
+
+   
     String priceqry = "SELECT price FROM flight WHERE flight_id = ?";
     double price = conf.getSingleValue(priceqry, flight_id);
+
     
     System.out.println("---------------------");
-    System.out.print("Enter received cash: ");
-    double rcash = sc.nextDouble();
-    
-   
+    double rcash = -1;
     while (rcash < price) {
         System.out.print("Enter received cash: ");
-        
-       
         if (sc.hasNextDouble()) {
             rcash = sc.nextDouble();
             if (rcash < price) {
@@ -148,24 +146,27 @@ public class BookFlight {
             sc.next(); 
         }
     }
-         System.out.println("Cash Received: " +rcash);
-         double change = rcash - price;
-         System.out.println("Change: "+ change);
-         
+
+  
+    System.out.println("Cash Received: " + rcash);
+    double change = rcash - price;
+    System.out.println("Change: " + change);
+
+   
     LocalDate currdate = LocalDate.now();
     DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     String date = currdate.format(format);
-    
+
     String status = "Pending";
-    
-    
-    String qry = "INSERT INTO book (p_id,flight_id, b_cash, b_date, status) VALUES (?, ?, ?, ?,?)";
-    conf.addRecord(qry,p_id, flight_id, String.valueOf(rcash), date, status);
-    
-        String updateSeatsQry = "UPDATE flight SET seats = seats - 1 WHERE flight_id = ?";
+    String qry = "INSERT INTO book (p_id, flight_id, b_cash, b_date, status) VALUES (?, ?, ?, ?, ?)";
+    conf.addRecord(qry, p_id, flight_id, String.valueOf(rcash), date, status);
+
+  
+    String updateSeatsQry = "UPDATE flight SET seats = seats - 1 WHERE flight_id = ?";
     conf.addRecord(updateSeatsQry, flight_id);
     System.out.println("Added Successfully!");
 }
+
      
 public void viewBF() {
     Scanner sc = new Scanner(System.in);
@@ -234,7 +235,7 @@ private void updateBF(){
         p_id = sc.nextLine();
     }
     
-         fi.viewFlight();
+          fi.viewAvailableFlights();
         System.out.println("Enter the new Flight ID:");
         String flight_id = sc.nextLine();
         
